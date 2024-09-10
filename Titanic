@@ -1,0 +1,66 @@
+from google.colab import files
+uploaded = files.upload()
+import pandas as pd
+df=pd.read_csv('/content/tested.csv')
+print(df)
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+df.info()
+df.isnull().sum()
+df= df.drop(columns='Cabin', axis=1)
+df['Age'].fillna(df['Age'].mean(), inplace=True)
+df.info()
+print(df['Embarked'].mode())
+print(df['Embarked'].mode()[0])
+df['Embarked'].fillna(df['Embarked'].mode()[0], inplace=True)
+df.isnull().sum()
+df.describe()
+df['Survived'].value_counts()
+sns.set()
+sns.countplot(df['Survived'])
+# Try using 'Sex' instead of 'sex'
+df['Sex'].value_counts()
+df.isnull().sum()
+sns.countplot(df['Sex'])
+sns.countplot(x='Sex', hue='Survived', data=df)
+sns.countplot(x='Pclass', data=df)
+sns.countplot(x='Pclass', hue='Survived', data=df)
+df['Sex'].value_counts()
+df['Embarked'].value_counts()
+df.replace({'Sex':{"male": 0, "female":1}, 'Embarked':{'S':'S', 'C':'C'}})
+df.replace({'Sex':{"male": 0, "female":1}, 'Embarked':{'S':'S', 'C':'C', '5': 'Other'}})
+df.replace({'Sex': {'male':0, 'female':1}, 'Embarked': {'S':0, 'C':1, 'Q':2}})
+x = df.drop(columns = ['PassengerId', 'Name', 'Ticket', 'Survived'], axis=1)
+
+Y = df['Survived']
+print(x)
+print(Y)
+x_train, x_test, Y_train, Y_test = train_test_split(x,Y, test_size=0.2, random_state=2)
+print(x.shape,x_train.shape,x_test.shape)
+from sklearn.linear_model import LogisticRegression
+model = LogisticRegression()
+model.fit(x_test, Y_test)
+x_test_predection = model.predict(x_test)
+print(x_test_predection)
+# Import the necessary function
+from sklearn.metrics import accuracy_score
+test_data_accuracy = accuracy_score(Y_test, x_test_predection)
+print('Accuracy score of test data', test_data_accuracy)
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer
+from sklearn.metrics import accuracy_score
+imputer = SimpleImputer(strategy='mean')  # Or choose another strategy like 'median'
+x_train = imputer.fit_transform(x_train)
+# Now you can fit the model
+model.fit(x_test, Y_test)
+# Make predictions
+x_train_prediction = model.predict(x_train)
+train_data_accuracy = accuracy_score(Y_train, x_train_prediction)
+print('Accuracy score of train data', train_data_accuracy)
