@@ -1,0 +1,96 @@
+from google.colab import files
+uploaded = files.upload()
+import pandas as pd
+df=pd.read_csv('/content/CarPrice_Assignment.csv')
+print(df)
+print(df.head())
+print(df.info())
+import pandas as pd
+
+# Identify numeric columns
+numeric_columns = df.select_dtypes(include=['number']).columns
+
+# Fill missing values in numeric columns with their medians
+df[numeric_columns] = df[numeric_columns].fillna(df[numeric_columns].median())
+df = pd.get_dummies(df, columns=['CarName', 'fueltype'], drop_first=True)
+df['enginesize'] = 2024 - df['wheelbase']
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+# Removed 'carbody' since it's not a numerical feature
+numerical_features = ['citympg', 'horsepower']
+df[numerical_features] = scaler.fit_transform(df[numerical_features])
+from sklearn.model_selection import train_test_split
+
+X = df.drop('price', axis=1)
+y = df['price']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+from sklearn.linear_model import LinearRegression
+model = LinearRegression()
+# Check for 'std' in your features
+print(df[df.isin(['std']).any(axis=1)])
+
+# Replace 'std' with a numerical value or remove the rows containing 'std'
+# Example (replace with NaN):
+df.replace('std', pd.NA, inplace=True)
+df.dropna(inplace=True)
+import numpy as np  # Add this line at the beginning of your code
+
+# Check for non-numeric values in your features
+for col in X_train.columns:
+    non_numeric = X_train[col][~X_train[col].apply(lambda x: isinstance(x, (int, float)))]
+    if not non_numeric.empty:
+        print(f"Non-numeric values in column '{col}': {non_numeric.unique()}")
+
+# Replace or remove non-numeric values as needed
+# Example (replace with NaN):
+X_train.replace([value for col in X_train.columns for value in X_train[col].unique() if not isinstance(value, (int, float))], np.nan, inplace=True)
+# Check for non-numeric values in your features
+for col in X_train.columns:
+    non_numeric = X_train[col][~X_train[col].apply(lambda x: isinstance(x, (int, float)))]
+    if not non_numeric.empty:
+        print(f"Non-numeric values in column '{col}': {non_numeric.unique()}")
+
+# Replace or remove non-numeric values as needed
+# Example (replace with NaN):
+X_train.replace([value for col in X_train.columns for value in X_train[col].unique() if not isinstance(value, (int, float))], np.nan, inplace=True)
+from sklearn.impute import SimpleImputer
+imputer = SimpleImputer(strategy='mean') # Or other strategies like 'median'
+X_train_imputed = imputer.fit_transform(X_train)
+
+# Now fit the model with imputed data:
+model.fit(X_train_imputed, y_train)
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.impute import SimpleImputer
+
+# Create an imputer to fill missing values (NaN)
+imputer = SimpleImputer(strategy='mean')  # You can use other strategies like 'median'
+
+# Fit the imputer on your training data and transform it
+X_train_imputed = imputer.fit_transform(X_train)
+
+# Initialize the RandomForestRegressor model
+model = RandomForestRegressor(n_estimators=100, random_state=42)
+
+# Fit the model with the imputed data
+model.fit(X_train_imputed, y_train)
+from xgboost import XGBRegressor
+
+model = XGBRegressor(n_estimators=100, learning_rate=0.1, random_state=42)
+model.fit(X_train, y_train)]
+best_model=LinearRegression()
+for col in X_train.columns:
+    non_numeric = X_train[col][~X_train[col].apply(lambda x: isinstance(x, (int, float)))]
+    if not non_numeric.empty:
+        print(f"Non-numeric values in column '{col}': {non_numeric.unique()}")
+
+# Replace or remove non-numeric values as needed
+# Example (replace with NaN):
+X_train.replace([value for col in X_train.columns for value in X_train[col].unique() if not isinstance(value, (int, float))], np.nan, inplace=True)
+# Check for 'std' in your features
+print(df[df.isin(['std']).any(axis=1)])
+
+# Replace 'std' with a numerical value or remove the rows containing 'std'
+# Example (replace with NaN):
+df.replace('std', pd.NA, inplace=True)
+df.dropna(inplace=True)
